@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">LevelUP</string>
+    <string name="start_quiz">Start Quiz</string>
+    <string name="biology">Biology</string>
+    <string name="history">History</string>
+    <string name="literature">Literature</string>
+    <string name="maths">Maths</string>
+    <string name="question">This is an example Question. Can you dig it? What is 1?</string>
+    <string name="answer_1">One</string>
+    <string name="answer_2">Two</string>
+    <string name="answer_3">Three</string>
+    <string name="answer_4">Four</string>
+</resources>
