@@ -4,10 +4,18 @@
     <string name="biology">Biology</string>
     <string name="history">History</string>
     <string name="literature">Literature</string>
-    <string name="maths">Maths</string>
-    <string name="question">This is an example Question. Can you dig it? What is 1?</string>
+    <string name="general">General</string>
+    <string name="computers">Computers</string>
+    <string name="maths">Mathematics</string>
+    <string name="geography">Geography</string>
+    <string name="politics">Politics</string>
+    <string name="mythology">Mythology</string>
+    <string name="art">Art</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="question">Question Text</string>
     <string name="answer_1">One</string>
     <string name="answer_2">Two</string>
     <string name="answer_3">Three</string>
     <string name="answer_4">Four</string>
+    <string name="main_menu">Main Menu</string>
 </resources>

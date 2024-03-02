@@ -55,5 +55,14 @@
     <color name="deep_orange_200">#FFFFAB91</color>
     <color name="deep_orange_500">#FFFF5722</color>
     <color name="deep_orange_700">#FFE64A19</color>
-
+    <color name="history">#FF967B6F</color>
+    <color name="biology">#FF228B22</color>
+    <color name="literature">#FF800000</color>
+    <color name="maths">#FFD3D3D3</color>
+    <color name="geography">#FFADD8E6</color>
+    <color name="politics">#FF800080</color>
+    <color name="mythology">#FF8B4513</color>
+    <color name="art">#FFFFA07A</color>
+    <color name="general">#FFE64A19</color>
+    <color name="computers">#FF007BFF</color>
 </resources>
