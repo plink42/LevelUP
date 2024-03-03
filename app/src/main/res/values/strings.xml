@@ -18,4 +18,5 @@
     <string name="answer_3">Three</string>
     <string name="answer_4">Four</string>
     <string name="main_menu">Main Menu</string>
+    <string name="retry">Retry</string>
 </resources>

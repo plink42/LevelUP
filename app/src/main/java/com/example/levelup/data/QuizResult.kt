@@ -1,6 +1,8 @@
 package com.example.levelup.data
 
 data class QuizStats(
+    var category: Int,
+    var categoryName: String,
     var totalQuestions: Int,
     var correctAnswers: Int,
     var incorrectAnswers: Int,

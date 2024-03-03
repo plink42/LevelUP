@@ -1,5 +1,6 @@
 package com.example.levelup
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Html
@@ -32,6 +33,8 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var questions: List<Question>
     private var results = mutableListOf<QuizResult>()
     private var stats = QuizStats(
+        category = 0,
+        categoryName = "",
         totalQuestions = 0,
         correctAnswers = 0,
         incorrectAnswers = 0,
@@ -77,6 +80,7 @@ class QuizActivity : AppCompatActivity() {
 
     private suspend fun displayQuiz(category: Int, difficulty: String) {
         questions = fetchAndShuffleQuestions(category, difficulty)
+        stats.category = category
         stats.totalQuestions = questions.size
         stats.difficulty = difficulty
         displayNextQuestion()
@@ -98,9 +102,7 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun displayNextQuestion() {
-        Log.d("QuizActivity", "Displaying next question ${currentQuestionIndex} out of ${questions.size}")
         if (currentQuestionIndex >= questions.size) {
-            Log.d("QuizActivity", "No more questions")
             displayResults()
         } else {
             val question = questions[currentQuestionIndex]
@@ -229,7 +231,7 @@ class QuizActivity : AppCompatActivity() {
                 "out of <b>${stats.totalQuestions}</b> correct!<br><br>" +
                 "Correct: <b>${stats.correctAnswers}</b><br>" +
                 "Incorrect: <b>${stats.incorrectAnswers}</b><br>" +
-                "Difficulty: <b>${stats.difficulty}</b>")
+                "Difficulty: <b>${stats.difficulty}</b>", 0)
         questionText.text = resultText
         answerButton1.visibility = Button.VISIBLE
         answerButton1.text = resources.getText(R.string.main_menu)
@@ -237,8 +239,12 @@ class QuizActivity : AppCompatActivity() {
         answerButton1.setOnClickListener {
             mainMenu()
         }
-        answerButton2.isClickable = false
-        answerButton2.visibility = Button.INVISIBLE
+        answerButton2.visibility = Button.VISIBLE
+        answerButton2.text = resources.getText(R.string.retry)
+        answerButton2.setBackgroundColor(resources.getColor(R.color.green_200, null))
+        answerButton2.setOnClickListener {
+            retryQuiz(stats.category, stats.difficulty)
+        }
         answerButton3.isClickable = false
         answerButton3.visibility = Button.INVISIBLE
         answerButton4.isClickable = false
@@ -248,6 +254,13 @@ class QuizActivity : AppCompatActivity() {
     private fun mainMenu() {
         // Return to the main menu
         finish()
+    }
+
+    private fun retryQuiz(category: Int, difficulty: String) {
+        val intent = Intent(this, QuizActivity::class.java)
+        intent.putExtra("category", category)
+        intent.putExtra("difficulty", difficulty)
+        startActivity(intent)
     }
 
 }
