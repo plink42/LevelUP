@@ -1,6 +1,5 @@
 package com.example.levelup
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Html
@@ -239,12 +238,8 @@ class QuizActivity : AppCompatActivity() {
         answerButton1.setOnClickListener {
             mainMenu()
         }
-        answerButton2.visibility = Button.VISIBLE
-        answerButton2.text = resources.getText(R.string.retry)
-        answerButton2.setBackgroundColor(resources.getColor(R.color.green_200, null))
-        answerButton2.setOnClickListener {
-            retryQuiz(stats.category, stats.difficulty)
-        }
+        answerButton2.isClickable = false
+        answerButton2.visibility = Button.INVISIBLE
         answerButton3.isClickable = false
         answerButton3.visibility = Button.INVISIBLE
         answerButton4.isClickable = false
@@ -256,11 +251,5 @@ class QuizActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun retryQuiz(category: Int, difficulty: String) {
-        val intent = Intent(this, QuizActivity::class.java)
-        intent.putExtra("category", category)
-        intent.putExtra("difficulty", difficulty)
-        startActivity(intent)
-    }
 
 }
