@@ -13,10 +13,12 @@
     <string name="art">Art</string>
     <string name="difficulty">Difficulty</string>
     <string name="question">Question Text</string>
+    <string name="explanation">Explanation Text</string>
     <string name="answer_1">One</string>
     <string name="answer_2">Two</string>
     <string name="answer_3">Three</string>
     <string name="answer_4">Four</string>
     <string name="main_menu">Main Menu</string>
     <string name="retry">Retry</string>
+    <string name="logo">LevelUP Logo</string>
 </resources>

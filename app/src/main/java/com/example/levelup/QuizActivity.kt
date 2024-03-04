@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Html
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,7 @@ class QuizActivity : AppCompatActivity() {
         .build()
     private val triviaApiService = retrofit.create(TriviaApiService::class.java)
     private lateinit var questionText: TextView
+    private lateinit var explanationText: TextView
     private lateinit var answerButton1: Button
     private lateinit var answerButton2: Button
     private lateinit var answerButton3: Button
@@ -43,6 +45,8 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var timerText: TextView
     private var countDownTimer: CountDownTimer? = null
 
+    private lateinit var questionNumber: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
@@ -52,11 +56,14 @@ class QuizActivity : AppCompatActivity() {
         val difficulty = intent.getStringExtra("difficulty").toString()
 
         questionText = findViewById(R.id.question_text)
+        explanationText = findViewById(R.id.explanation_text)
+        explanationText.visibility = TextView.INVISIBLE
         answerButton1 = findViewById(R.id.answer_button_1)
         answerButton2 = findViewById(R.id.answer_button_2)
         answerButton3 = findViewById(R.id.answer_button_3)
         answerButton4 = findViewById(R.id.answer_button_4)
         timerText = findViewById(R.id.timer)
+        questionNumber = findViewById(R.id.question_number)
 
         lifecycleScope.launch {
             displayQuiz(category, difficulty)
@@ -105,6 +112,7 @@ class QuizActivity : AppCompatActivity() {
             displayResults()
         } else {
             val question = questions[currentQuestionIndex]
+            explanationText.visibility = TextView.INVISIBLE
             questionText.text = Html.fromHtml(question.text, 0)
             answerButton1.text = Html.fromHtml(question.answerChoices[0], 0)
             answerButton1.setBackgroundColor(resources.getColor(R.color.purple_500, null))
@@ -122,6 +130,7 @@ class QuizActivity : AppCompatActivity() {
             answerButton4.setBackgroundColor(resources.getColor(R.color.purple_500, null))
             answerButton4.isClickable = true
             answerButton4.visibility = Button.VISIBLE
+            questionNumber.text = "Question ${currentQuestionIndex + 1} of ${stats.totalQuestions}"
             setupClickListeners(question)
             startTimer()
         }
@@ -129,14 +138,14 @@ class QuizActivity : AppCompatActivity() {
     private fun handleAnswerClick(selectedAnswerIndex: Int, button: Button, question: Question) {
         countDownTimer?.cancel()
         val selectedAnswer = question.answerChoices[selectedAnswerIndex]
-        Log.d("QuizActivity", "Selected answer: ${button.text}")
         results.add(QuizResult(
             question = question.text,
             selectedAnswer = selectedAnswer,
             correctAnswer = question.correctAnswer,
             isCorrect = selectedAnswer == question.correctAnswer
         ))
-
+        explanationText.visibility = TextView.VISIBLE
+        explanationText.text = Html.fromHtml(question.explanation, 0)
         if (selectedAnswer == question.correctAnswer) {
             button.setBackgroundColor(resources.getColor(R.color.green_500, null))
             stats.correctAnswers += 1
@@ -146,7 +155,6 @@ class QuizActivity : AppCompatActivity() {
                 answerButton.isClickable = false
                 answerButton.visibility = Button.INVISIBLE
             }
-            Log.d("QuizActivity", "Correct!")
         } else {
             button.setBackgroundColor(resources.getColor(R.color.red_500, null))
             stats.incorrectAnswers += 1
@@ -162,7 +170,6 @@ class QuizActivity : AppCompatActivity() {
                     }
                 }
             }
-            Log.d("QuizActivity", "Incorrect!")
         }
         currentQuestionIndex++
         lifecycleScope.launch {
@@ -179,7 +186,7 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private suspend fun delayAndDisplayNextQuestion() {
-        delay(1000)
+        delay(1500)
         displayNextQuestion()
     }
 
@@ -194,7 +201,8 @@ class QuizActivity : AppCompatActivity() {
                 Question(
                     text = result.question,
                     answerChoices = shuffleAnswers(result.incorrectAnswers + result.correctAnswer),
-                    correctAnswer = result.correctAnswer
+                    correctAnswer = result.correctAnswer,
+                    explanation = "This is a placeholder explanation because the API does not provide one. The answer is: ${result.correctAnswer}"
                 )
             } ?: emptyList()
             return questions
@@ -204,9 +212,7 @@ class QuizActivity : AppCompatActivity() {
 
     private fun shuffleQuestions(questions: List<Question>): List<Question> {
         val shuffledQuestions = questions.toMutableList()
-        Log.d("QuizActivity", "Shuffled questions: $shuffledQuestions")
         shuffledQuestions.shuffle()
-        Log.d("QuizActivity", "Shuffled questions: $shuffledQuestions")
         return shuffledQuestions
     }
 
@@ -225,12 +231,27 @@ class QuizActivity : AppCompatActivity() {
         // Display the results
         timerText.text = ""
         timerText.visibility = TextView.INVISIBLE
+        explanationText.visibility = TextView.INVISIBLE
         questionText.setBackgroundColor(resources.getColor(R.color.light_green_700, null))
-        val resultText = Html.fromHtml("You got <b>${stats.correctAnswers}</b> "+
+        val percentage = (stats.correctAnswers.toDouble() / stats.totalQuestions.toDouble()) * 100
+        val congrats: String
+        if (stats.correctAnswers == stats.totalQuestions) {
+            congrats = "Perfect!"
+        } else if (percentage >= 75) {
+            congrats = "Great job!"
+        } else {
+            congrats = "Good effort!"
+        }
+        val resultText = Html.fromHtml("<h1>${percentage}%</h1>"+
+                "<h2>${congrats}</h2>"+
+                "You got <b>${stats.correctAnswers}</b> "+
                 "out of <b>${stats.totalQuestions}</b> correct!<br><br>" +
                 "Correct: <b>${stats.correctAnswers}</b><br>" +
                 "Incorrect: <b>${stats.incorrectAnswers}</b><br>" +
                 "Difficulty: <b>${stats.difficulty}</b>", 0)
+        val qtLayout = questionText.layoutParams as ViewGroup.LayoutParams
+        qtLayout.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        questionText.layoutParams = qtLayout
         questionText.text = resultText
         answerButton1.visibility = Button.VISIBLE
         answerButton1.text = resources.getText(R.string.main_menu)
@@ -244,6 +265,7 @@ class QuizActivity : AppCompatActivity() {
         answerButton3.visibility = Button.INVISIBLE
         answerButton4.isClickable = false
         answerButton4.visibility = Button.INVISIBLE
+        questionNumber.visibility = TextView.INVISIBLE
     }
 
     private fun mainMenu() {
