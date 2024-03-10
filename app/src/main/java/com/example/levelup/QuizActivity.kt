@@ -132,7 +132,12 @@ class QuizActivity : AppCompatActivity() {
             answerButton4.setBackgroundColor(resources.getColor(R.color.purple_500, null))
             answerButton4.isClickable = true
             answerButton4.visibility = Button.VISIBLE
-            questionNumber.text = "Question ${currentQuestionIndex + 1} of ${stats.totalQuestions}"
+            val formattedQuestionNumber = String.format(
+                resources.getString(R.string.question_number),
+                currentQuestionIndex + 1,
+                stats.totalQuestions
+            )
+            questionNumber.text = formattedQuestionNumber
             questionCategoryText.text = Html.fromHtml(question.category, 0)
             setupClickListeners(question)
             startTimer()
@@ -238,13 +243,11 @@ class QuizActivity : AppCompatActivity() {
         explanationText.visibility = TextView.INVISIBLE
         questionText.setBackgroundColor(resources.getColor(R.color.light_green_700, null))
         val percentage = (stats.correctAnswers.toDouble() / stats.totalQuestions.toDouble()) * 100
-        val congrats: String
+        var congrats = "Good effort!"
         if (stats.correctAnswers == stats.totalQuestions) {
             congrats = "Perfect!"
         } else if (percentage >= 75) {
             congrats = "Great job!"
-        } else {
-            congrats = "Good effort!"
         }
         val resultText = Html.fromHtml("<h1>${percentage}%</h1>"+
                 "<h2>${congrats}</h2>"+

@@ -13,8 +13,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.startsWith
-import org.hamcrest.Matchers.hasToString
 import org.junit.After
 import org.junit.Before
 
