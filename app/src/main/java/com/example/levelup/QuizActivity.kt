@@ -46,6 +46,7 @@ class QuizActivity : AppCompatActivity() {
     private var countDownTimer: CountDownTimer? = null
 
     private lateinit var questionNumber: TextView
+    private lateinit var questionCategoryText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +65,7 @@ class QuizActivity : AppCompatActivity() {
         answerButton4 = findViewById(R.id.answer_button_4)
         timerText = findViewById(R.id.timer)
         questionNumber = findViewById(R.id.question_number)
+        questionCategoryText = findViewById(R.id.question_category)
 
         lifecycleScope.launch {
             displayQuiz(category, difficulty)
@@ -131,6 +133,7 @@ class QuizActivity : AppCompatActivity() {
             answerButton4.isClickable = true
             answerButton4.visibility = Button.VISIBLE
             questionNumber.text = "Question ${currentQuestionIndex + 1} of ${stats.totalQuestions}"
+            questionCategoryText.text = Html.fromHtml(question.category, 0)
             setupClickListeners(question)
             startTimer()
         }
@@ -202,7 +205,8 @@ class QuizActivity : AppCompatActivity() {
                     text = result.question,
                     answerChoices = shuffleAnswers(result.incorrectAnswers + result.correctAnswer),
                     correctAnswer = result.correctAnswer,
-                    explanation = "This is a placeholder explanation because the API does not provide one. The answer is: ${result.correctAnswer}"
+                    explanation = "This is a placeholder explanation because the API does not provide one. The answer is: ${result.correctAnswer}",
+                    category = result.category
                 )
             } ?: emptyList()
             return questions
