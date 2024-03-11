@@ -49,6 +49,7 @@ class MainInstrumentedTest {
         onData(allOf(`is`(instanceOf(String::class.java)), `is`("easy"))).perform(click())
         onView(withId(R.id.computers_button)).perform(click())
         intended(allOf(hasComponent(QuizActivity::class.java.name), hasExtra("category", 18), hasExtra("difficulty", "easy")))
+
     }
 
     @Test
